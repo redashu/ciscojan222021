@@ -19,3 +19,23 @@
 
 <img src="cont.png">
 
+## Container support in host kernel
+
+<img src="hostk.png">
+
+## container runtime engines  [CRE]
+
+<img src="cre.png">
+
+## Docker based containers 
+
+<img src="docker-ce.png">
+
+## Docker Desktop for mac 
+
+[mac Docker Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-mac)
+
+## Docker desktop for windows 10 
+
+[w10docker desktop](https://hub.docker.com/editions/community/docker-ce-desktop-windows/)
+
