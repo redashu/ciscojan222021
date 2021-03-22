@@ -398,4 +398,248 @@ Successfully tagged ashupython:v1
 
 
 ```
+## Inspecting image 
+
+```
+0057  docker  inspect  ashupython:v1   -f '{{.RepoTags}}'
+10058  docker  inspect  ashupython:v1   --format '{{.RepoTags}}'
+10059  docker  inspect  ashupython:v1   -f '{{.ContainerConfig.Cmd}}'
+
+```
+
+
+### Removing a container 
+
+```
+❯ docker  ps
+CONTAINER ID   IMAGE           COMMAND            CREATED       STATUS       PORTS     NAMES
+3f16bc4ecfdf   alpine:latest   "ping 127.0.0.1"   2 hours ago   Up 2 hours             ashuc1
+❯ docker kill ashuc1
+ashuc1
+❯ docker rm  ashuc1
+ashuc1
+❯ docker ps -a
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED       STATUS                     PORTS     NAMES
+bcbf65b8492a   alpine:latest                         "ping 127.0.0.1"         2 hours ago   Exited (0) 2 hours ago               brave_lehmann
+78e5ccdd80db   gcr.io/k8s-minikube/kicbase:v0.0.18   "/usr/local/bin/entr…"   12 days ago   Exited (137) 2 hours ago             minikube
+❯ docker rm  bcbf65b8492a
+bcbf65b8492a
+
+```
+
+### creating container from custom docker image 
+
+```
+❯ docker  run -d  --name pyc1  ashupython:v1
+2522d304eacaad1bd831f95f0992b93ecc60a65d6dda287e92770bf133ec3386
+❯ docker  ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED         STATUS         PORTS     NAMES
+2522d304eaca   ashupython:v1   "python3 /mycode/cis…"   4 seconds ago   Up 2 seconds             pyc1
+
+```
+
+## bEst practise to create container which is having interpretor / compiler
+
+```
+❯ docker  run -d -it   --name pyc2  ashupython:v1
+a10dd45cedb1893da0c3eb8c1a8d73e4ed2fd1d758e6550758662c7b1b67e40f
+❯ docker  ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED         STATUS         PORTS     NAMES
+a10dd45cedb1   ashupython:v1   "python3 /mycode/cis…"   7 seconds ago   Up 6 seconds             pyc2
+2522d304eaca   ashupython:v1   "python3 /mycode/cis…"   4 minutes ago   Up 4 minutes             pyc1
+❯ docker logs  pyc2
+Hello CIsco !!
+sample python code to containerize !!
+_______________
+Hello CIsco !!
+sample python code to containerize !!
+_______________
+Hello CIsco !!
+sample python code to containerize !!
+_______________
+❯ docker logs -f  pyc2
+
+```
+
+## to kill all the containers 
+
+```
+❯ docker  ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED         STATUS         PORTS     NAMES
+a10dd45cedb1   ashupython:v1   "python3 /mycode/cis…"   3 minutes ago   Up 3 minutes             pyc2
+2522d304eaca   ashupython:v1   "python3 /mycode/cis…"   8 minutes ago   Up 8 minutes             pyc1
+❯ docker  ps  -q
+a10dd45cedb1
+2522d304eaca
+❯ docker kill  $(docker  ps  -q)
+a10dd45cedb1
+2522d304eaca
+❯ docker  ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+```
+
+## To remove all non-running containers
+
+```
+❯ docker  ps  -qa
+a10dd45cedb1
+2522d304eaca
+78e5ccdd80db
+❯ docker rm $(docker  ps  -qa)
+a10dd45cedb1
+2522d304eaca
+78e5ccdd80db
+
+```
+
+## Dockerfile few explanation 
+
+<img src="fdocker.png">
+
+## Docker in one shot 
+
+<img src="dshot.png">
+
+### java code based image build process
+
+```
+❯ docker  build  -t  ashujava:v1  .
+Sending build context to Docker daemon  3.072kB
+Step 1/7 : FROM openjdk
+latest: Pulling from library/openjdk
+63e877180dd1: Pull complete 
+2d9ff0a89ff9: Pull complete 
+24a670a0f608: Pull complete 
+Digest: sha256:52809b47f22be03496269ea5b5ca6f6259f0a44c60547791149021feb9619c96
+Status: Downloaded newer image for openjdk:latest
+ ---> db72010b969f
+Step 2/7 : MAINTAINER ashutoshh@linux.com
+ ---> Running in ce9cfdf904ba
+Removing intermediate container ce9cfdf904ba
+ ---> 1885d592ab34
+Step 3/7 : RUN mkdir /mydata
+ ---> Running in cb43d1291d0c
+Removing intermediate container cb43d1291d0c
+ ---> c432dacbda35
+Step 4/7 : COPY hello.java /mydata/hello.java
+ ---> e87f4e230729
+Step 5/7 : WORKDIR  /mydata
+ ---> Running in f70bc96c7854
+Removing intermediate container f70bc96c7854
+ ---> 271a08e2228b
+Step 6/7 : RUN javac hello.java
+ ---> Running in 93b167769d25
+Removing intermediate container 93b167769d25
+ ---> b03e44af6ee9
+Step 7/7 : CMD ["java","myclass"]
+ ---> Running in 73b8728fc732
+Removing intermediate container 73b8728fc732
+ ---> 388443808c2b
+Successfully built 388443808c2b
+Successfully tagged ashujava:v1
+
+```
+
+### creating container 
+
+```
+10090  docker  build  -t  ashujava:v1  . 
+10091  docker  images
+10092  docker  run  -itd  --name x1  ashujava:v1  
+10093  docker  ps
+10094  docker logs -f  x1
+
+```
+
+### a running container accessing 
+
+```
+❯ docker  ps
+CONTAINER ID   IMAGE         COMMAND          CREATED         STATUS         PORTS     NAMES
+5593bd49b6ae   ashujava:v1   "java myclass"   4 minutes ago   Up 4 minutes             x1
+❯ docker  exec  -it  x1  bash
+bash-4.4# 
+bash-4.4# 
+bash-4.4# cat  /etc/os-release 
+NAME="Oracle Linux Server"
+VERSION="8.3"
+ID="ol"
+ID_LIKE="fedora"
+VARIANT="Server"
+VARIANT_ID="server"
+VERSION_ID="8.3"
+PLATFORM_ID="platform:el8"
+PRETTY_NAME="Oracle Linux Server 8.3"
+ANSI_COLOR="0;31"
+
+```
+
+### TO connect remote docker engine 
+
+#### you can configure profile 
+
+```
+❯ docker  context   ls
+NAME                TYPE                DESCRIPTION                               DOCKER ENDPOINT               KUBERNETES ENDPOINT   ORCHESTRATOR
+default *           moby                Current DOCKER_HOST based configuration   unix:///var/run/docker.sock                         swarm
+
+
+```
+
+## creating context 
+
+```
+❯ docker  context  create  ashuDE --docker  "host=tcp://54.157.236.19:2375"
+ashuDE
+Successfully created context "ashuDE"
+❯ docker  context   ls
+NAME                TYPE                DESCRIPTION                               DOCKER ENDPOINT               KUBERNETES ENDPOINT   ORCHESTRATOR
+ashuDE              moby                                                          tcp://54.157.236.19:2375                            
+default *           moby                Current DOCKER_HOST based configuration   unix:///var/run/docker.sock                         swarm
+
+
+```
+
+### using remote docker engine 
+
+```
+❯ docker  context  use  ashuDE
+ashuDE
+❯ docker context  ls
+NAME                TYPE                DESCRIPTION                               DOCKER ENDPOINT               KUBERNETES ENDPOINT   ORCHESTRATOR
+ashuDE *            moby                                                          tcp://54.157.236.19:2375                            
+default             moby                Current DOCKER_HOST based configuration   unix:///var/run/docker.sock                         swarm
+❯ docker  images
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+
+```
+
+## TIme to containerize webapplication 
+
+<img src="contwebapp.png">
+
+
+# docker server setup with tcp 2375 port 
+
+```
+[root@ip-172-31-76-202 docker]# cat  /etc/sysconfig/docker
+# The max number of open files for the daemon itself, and all
+# running containers.  The default value of 1048576 mirrors the value
+# used by the systemd service unit.
+DAEMON_MAXFILES=1048576
+
+# Additional startup options for the Docker daemon, for example:
+# OPTIONS="--ip-forward=true --iptables=true"
+# By default we limit the number of open files per container
+OPTIONS="--default-ulimit nofile=1024:4096 -H tcp://0.0.0.0:2375"
+
+# How many seconds the sysvinit script waits for the pidfile to appear
+# when starting the daemon.
+DAEMON_PIDFILE_TIMEOUT=10
+
+
+```
+
+### 
 
