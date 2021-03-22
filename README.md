@@ -1,6 +1,11 @@
-# Check branches for all docs 
+# Docker pre discussions 
 
-## overall plan 
+## application deployment problems with Bare-metal 
 
-<img src="plan.png">
+<img src="bare.png">
+
+
+## application deployment with Virtualization technology 
+
+<img src="vm.png">
 
