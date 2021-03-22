@@ -300,3 +300,102 @@ CONTAINER ID   IMAGE           COMMAND            CREATED         STATUS        
 
 ```
 
+## Docker build and container creation 
+
+<img src="dbuild.png">
+
+## builder tool to build custom docker images
+
+<img src="dimg.png">
+
+## docker build 
+
+```
+❯ docker  build  -t  ashupython:v1  Desktop/mydockerimages/pythoncode
+Sending build context to Docker daemon  3.584kB
+Step 1/6 : FROM centos
+ ---> 300e315adb2f
+Step 2/6 : MAINTAINER  ashutoshh@linux.com , 9509957594
+ ---> Running in a39d76e24e4b
+Removing intermediate container a39d76e24e4b
+ ---> a50c4ee68b4c
+Step 3/6 : RUN yum  install python3  -y
+ ---> Running in 31077acc8918
+CentOS Linux 8 - AppStream                      518 kB/s | 6.3 MB     00:12    
+CentOS Linux 8 - BaseOS                         1.7 MB/s | 2.3 MB     00:01    
+CentOS Linux 8 - Extras                          14 kB/s | 9.2 kB     00:00    
+Dependencies resolved.
+================================================================================
+ Package             Arch   Version                             Repo       Size
+================================================================================
+Installing:
+ python36            x86_64 3.6.8-2.module_el8.3.0+562+e162826a appstream  19 k
+Installing dependencies:
+ platform-python-pip noarch 9.0.3-18.el8                        baseos    1.7 M
+ python3-pip         noarch 9.0.3-18.el8                        appstream  20 k
+ python3-setuptools  noarch 39.2.0-6.el8                        baseos    163 k
+Enabling module streams:
+ python36                   3.6                                                
+
+Transaction Summary
+================================================================================
+Install  4 Packages
+
+Total download size: 1.9 M
+Installed size: 7.6 M
+Downloading Packages:
+(1/4): python36-3.6.8-2.module_el8.3.0+562+e162  69 kB/s |  19 kB     00:00    
+(2/4): python3-pip-9.0.3-18.el8.noarch.rpm       66 kB/s |  20 kB     00:00    
+(3/4): platform-python-pip-9.0.3-18.el8.noarch. 3.6 MB/s | 1.7 MB     00:00    
+(4/4): python3-setuptools-39.2.0-6.el8.noarch.r 811 kB/s | 163 kB     00:00    
+--------------------------------------------------------------------------------
+Total                                           1.2 MB/s | 1.9 MB     00:01     
+warning: /var/cache/dnf/appstream-02e86d1c976ab532/packages/python3-pip-9.0.3-18.el8.noarch.rpm: Header V3 RSA/SHA256 Signature, key ID 8483c65d: NOKEY
+CentOS Linux 8 - AppStream                      669 kB/s | 1.6 kB     00:00    
+Importing GPG key 0x8483C65D:
+ Userid     : "CentOS (CentOS Official Signing Key) <security@centos.org>"
+ Fingerprint: 99DB 70FA E1D7 CE22 7FB6 4882 05B5 55B3 8483 C65D
+ From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+Key imported successfully
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Installing       : python3-setuptools-39.2.0-6.el8.noarch                 1/4 
+  Installing       : platform-python-pip-9.0.3-18.el8.noarch                2/4 
+  Installing       : python36-3.6.8-2.module_el8.3.0+562+e162826a.x86_64    3/4 
+  Running scriptlet: python36-3.6.8-2.module_el8.3.0+562+e162826a.x86_64    3/4 
+  Installing       : python3-pip-9.0.3-18.el8.noarch                        4/4 
+  Running scriptlet: python3-pip-9.0.3-18.el8.noarch                        4/4 
+  Verifying        : python3-pip-9.0.3-18.el8.noarch                        1/4 
+  Verifying        : python36-3.6.8-2.module_el8.3.0+562+e162826a.x86_64    2/4 
+  Verifying        : platform-python-pip-9.0.3-18.el8.noarch                3/4 
+  Verifying        : python3-setuptools-39.2.0-6.el8.noarch                 4/4 
+
+Installed:
+  platform-python-pip-9.0.3-18.el8.noarch                                       
+  python3-pip-9.0.3-18.el8.noarch                                               
+  python3-setuptools-39.2.0-6.el8.noarch                                        
+  python36-3.6.8-2.module_el8.3.0+562+e162826a.x86_64                           
+
+Complete!
+Removing intermediate container 31077acc8918
+ ---> c6ae2be06bfb
+Step 4/6 : RUN mkdir /mycode
+ ---> Running in a08db47a782b
+Removing intermediate container a08db47a782b
+ ---> 967282ce99bf
+Step 5/6 : COPY  cisco.py  /mycode/cisco.py
+ ---> ea51904bbe94
+Step 6/6 : CMD ["python3","/mycode/cisco.py"]
+ ---> Running in 2c90ddb5a0b4
+Removing intermediate container 2c90ddb5a0b4
+ ---> 8595d186c6d0
+Successfully built 8595d186c6d0
+Successfully tagged ashupython:v1
+
+
+```
+
