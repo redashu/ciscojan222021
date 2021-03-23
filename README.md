@@ -133,4 +133,93 @@ docker  build  -t  ashuflask:v001  -f  ashu.dockerfile  .
 
 ```
 
+## Creating container 
+
+```
+❯ docker  run  -itd  --name ashuc1  -p  1234:5000  ashuflask:v001
+4425e0d2b504fdf40a2993f36dfe790554e83ea2e440da063827b79c61806fd8
+❯ docker  ps
+CONTAINER ID   IMAGE            COMMAND             CREATED         STATUS         PORTS                    NAMES
+4425e0d2b504   ashuflask:v001   "python3 demo.py"   5 seconds ago   Up 3 seconds   0.0.0.0:1234->5000/tcp   ashuc1
+❯ docker  ps
+
+```
+
+# To share the docker image you build 
+
+## methods 
+
+<img src="method.png">
+
+
+## image registry info 
+
+<img src="imgreg.png">
+
+## reality of image name 
+
+<img src="name.png">
+
+## pushing image to docker hub 
+
+### steps 
+
+```
+docker   tag   ashuflask:v001   dockerashu/ashuflask:v001
+
+---
+
+❯ docker  login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: dockerashu
+Password: 
+Login Succeeded
+
+----
+
+
+❯ docker   push   dockerashu/ashuflask:v001
+The push refers to repository [docker.io/dockerashu/ashuflask]
+e42dd56b8edf: Pushed 
+452ba4bc787d: Pushed 
+4e4ced0acece: Pushed 
+dd45ee3e8e5c: Pushed 
+45d11b443936: Pushed 
+a97512b69db7: Pushed 
+c20d459170d8: Mounted from library/ubuntu 
+db978cae6a05: Mounted from library/ubuntu 
+aeb3f02e9374: Mounted from library/ubuntu 
+v001: digest: sha256:138f8b1ec36a4ec091a5692909c3ed0cbdfcc071fa6b14d08c4e352a5b2f52dd size: 2204
+
+----
+
+ docker  logout
+Removing login credentials for https://index.docker.io/v1/
+
+```
+
+# Multi stage Docker image 
+
+### Google Distroless
+
+https://github.com/GoogleContainerTools/distroless
+
+```
+
+FROM centos AS mybuilder 
+MAINTAINER  ashutoshh
+RUN mkdir /code
+COPY hello.py  /code/
+WORKDIR /code
+RUN chmod +x hello.py
+# here i am making code executable by permission 
+# above process is for only copy and execute permission to code
+
+FROM gcr.io/distroless/python3
+COPY --from=mybuilder  /code   /code1
+WORKDIR /code1
+CMD ["./hello.py"]
+
+```
+
 
