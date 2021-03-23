@@ -1,6 +1,10 @@
-# Check branches for all docs 
+# Container Isolation 
 
-## overall plan 
+## Namespaces 
 
-<img src="plan.png">
+<img src="ns.png">
+
+## Cgroups to put the limit on resources for each container 
+
+<img src="cgroups.png">
 
