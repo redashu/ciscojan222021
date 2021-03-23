@@ -222,4 +222,62 @@ CMD ["./hello.py"]
 
 ```
 
+# Docker networking 
+
+<img src="dnet.png">
+
+## checking default bridges
+
+```
+❯ docker  network   ls
+NETWORK ID     NAME      DRIVER    SCOPE
+0a15a8e8f66f   bridge    bridge    local
+ce1e5d5672aa   host      host      local
+f4e51e88ce60   none      null      local
+
+
+```
+
+## exploring bridge 
+```
+❯ docker  network   inspect  bridge
+[
+    {
+        "Name": "bridge",
+        "Id": "0a15a8e8f66ff96295479b1948c0c64109107bc7eabfa3f5da208bf59cbc1da0",
+        "Created": "2021-03-23T04:33:43.303576733Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {
+            "com.docker.network.bridge.default_bridge": "true",
+            "com.docker.network.bridge.enable_icc": "true",
+            "com.docker.network.bridge.enable_ip_masquerade": "true",
+            "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+            "com.docker.network.bridge.name": "docker0",
+            "com.docker.network.driver.mtu": "1500"
+        },
+        "Labels": {}
+    }
+]
+
+```
 
