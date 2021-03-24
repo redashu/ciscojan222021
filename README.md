@@ -236,3 +236,23 @@ services:
 
 ```
 
+## application depeloyment common problems in Docker engine 
+
+<img src="appdep.png">
+
+# APplication orchestration engine 
+
+<img src="orch.png">
+
+## reality of Kubernetes & container concept 
+
+<img src="kube.png">
+
+## Kubernetes (k8s) high level arch 
+
+<img src="k8sarch.png">
+
+## Master node componet 
+
+<img src="req.png">
+
