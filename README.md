@@ -118,3 +118,121 @@ a2300fd28637: Pull complete
 
 ```
 
+# Docker compose 
+
+## a new way of managing and creating and managing  all docker componets like network , volume , containers [orchestration tool]
+## its a client side tool 
+
+<img src="compose.png">
+
+## by default docker desktop has installed compose also 
+
+### to install manually you can use below link
+
+[compose install](https://docs.docker.com/compose/install/)
+
+## checking compose version on client side
+
+```
+❯ docker-compose -v
+docker-compose version 1.28.5, build c4eb3a1f
+
+```
+
+## COmpose example 1 
+
+```
+version: '3.8' # this is compose file version 
+# Network creation section 
+networks: # for creating network 
+ ashubr111:  # name of bridge it will automatically pick subnet 
+
+#  volume creation section 
+volumes: #  this is for creating volumes
+ ashuvolx1:  # name of volume 
+
+# About your application 
+services:  # to define everything about containers 
+ ashutest1:  # each service will have its own container information 
+  image: alpine
+  container_name: ashuxxc1 
+  command: ping fb.com
+  networks:
+   - ashubr111 
+  volumes:
+   - ashuvolx1:/mnt/ddx1 
+  restart: always # restart policy 
+ 
+ ```
+ 
+ ## running file 
+ 
+ ```
+ ❯ ls
+docker-compose.yaml
+❯ docker-compose up  -d
+Creating network "mycompose_ashubr111" with the default driver
+Creating volume "mycompose_ashuvolx1" with default driver
+Creating ashuxxc1 ... done
+❯ docker-compose  ps
+  Name       Command     State   Ports
+--------------------------------------
+ashuxxc1   ping fb.com   Up           
+❯ docker-compose  images
+Container   Repository    Tag       Image Id       Size  
+---------------------------------------------------------
+ashuxxc1    alpine       latest   28f6e2705743   5.613 MB
+
+```
+
+### compose command history 
+
+```
+10331  docker-compose up  -d
+10332  docker-compose  ps
+10333  docker-compose  images
+10334  docker-compose  logs
+10335  docker-compose  logs -f
+10336  docker-compose  ps
+10337  history
+10338  docker-compose  stop
+10339  docker-compose  ps
+10340  docker-compose  start
+10341  docker-compose  ps
+10342  docker-compose  kill
+10343  docker-compose  ps
+10344  docker-compose  start
+10345  docker-compose  down
+10346  docker-compose  ps
+
+```
+
+## example 2 
+
+```
+version: '3.8'
+networks:
+ ashubrxcb1:
+services:
+ mynewimg:
+  image: dockerashu/webserver:v1 
+  build: . # will call Dockerfile on current location 
+  container_name: ashuccc1
+  ports:
+   - 1133:80
+  restart: always
+  
+ ```
+ 
+ ## running 
+ 
+ ```
+ docker-compose -f  hello.yaml up  -d
+10350  docker-compose -f  hello.yaml ps
+10351  docker-compose -f  hello.yaml down
+10352  docker-compose -f  hello.yaml up  -d
+10353  docker-compose -f  hello.yaml ps
+
+
+```
+
