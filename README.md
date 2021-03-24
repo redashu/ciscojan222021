@@ -1,6 +1,10 @@
-# Check branches for all docs 
+# Everything you need to know in COntainerization process
 
-## overall plan 
+## things not to avoid 
 
-<img src="plan.png">
+<img src="contrem.png">
+
+## Use custom network 
+
+<img src="cusnet.png">
 
