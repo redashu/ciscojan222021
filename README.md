@@ -256,3 +256,246 @@ services:
 
 <img src="req.png">
 
+## Minion side component 
+
+<img src="minion.png">
+
+## k8s cluster deployment 
+
+<img src="k8sdep.png">
+
+## INstalling minikube in Mac 
+
+```
+❯ curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-darwin-amd64
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    99  100    99    0     0    117      0 --:--:-- --:--:-- --:--:--   117
+100   625  100   625    0     0    470      0  0:00:01  0:00:01 --:--:--   470
+100 7222k  100 7222k    0     0  1673k      0  0:00:04  0:00:04 --:--:-- 2711k
+❯ minikube version
+minikube version: v1.18.1
+commit: 09ee84d530de4a92f00f1c5dbc34cead092b95bc
+
+```
+## Understanding minikube 
+
+<img src="minikube.png">
+
+## creating cluster using minikube 
+
+```
+❯ minikube  start  --driver=docker
+😄  minikube v1.18.1 on Darwin 11.2.3
+✨  Using the docker driver based on existing profile
+👍  Starting control plane node minikube in cluster minikube
+🤷  docker "minikube" container is missing, will recreate.
+🔥  Creating docker container (CPUs=2, Memory=1990MB) ...
+🐳  Preparing Kubernetes v1.20.2 on Docker 20.10.3 ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v4
+🌟  Enabled addons: storage-provisioner, default-storageclass
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+
+```
+
+## check minikube cluster status 
+
+```
+❯ minikube  status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+timeToStop: Nonexistent
+
+
+```
+
+## connecting to k8s cluster using kubectl 
+
+```
+❯ kubectl   version
+Client Version: version.Info{Major:"1", Minor:"20", GitVersion:"v1.20.2", GitCommit:"faecb196815e248d3ecfb03c680a4507229c2a56", GitTreeState:"clean", BuildDate:"2021-01-13T13:28:09Z", GoVersion:"go1.15.5", Compiler:"gc", Platform:"darwin/amd64"}
+Server Version: version.Info{Major:"1", Minor:"20", GitVersion:"v1.20.2", GitCommit:"faecb196815e248d3ecfb03c680a4507229c2a56", GitTreeState:"clean", BuildDate:"2021-01-13T13:20:00Z", GoVersion:"go1.15.5", Compiler:"gc", Platform:"linux/amd64"}
+
+
+```
+
+
+====
+
+```
+❯ kubectl  cluster-info
+Kubernetes control plane is running at https://127.0.0.1:55006
+KubeDNS is running at https://127.0.0.1:55006/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+
+```
+
+=====
+
+```
+❯ kubectl  get  nodes
+NAME       STATUS   ROLES                  AGE   VERSION
+minikube   Ready    control-plane,master   14d   v1.20.2
+
+
+```
+
+## troubleshooting for minikube 
+
+```
+❯ minikube stop
+✋  Stopping node "minikube"  ...
+🛑  Powering off "minikube" via SSH ...
+🛑  1 nodes stopped.
+❯ minikube start
+😄  minikube v1.18.1 on Darwin 11.2.3
+✨  Using the docker driver based on existing profile
+👍  Starting control plane node minikube in cluster minikube
+🔄  Restarting existing docker container for "minikube" ...
+🐳  Preparing Kubernetes v1.20.2 on Docker 20.10.3 ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v4
+🌟  Enabled addons: default-storageclass, storage-provisioner
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+❯ kubectl  get  nodes
+NAME       STATUS   ROLES                  AGE   VERSION
+minikube   Ready    control-plane,master   14d   v1.20.2
+
+```
+
+# K8s multinode cluster Installation 
+
+## steps to perform in all the Nodes 
+
+### step 1 
+
+hostname setup for all nodes
+
+### step 2 
+
+```
+swapoff -a
+yum install docker -y
+systemctl  start  docker  
+systemctl enable docker  
+
+# to enable feature for any CNI 
+
+modprobe br_netfilter
+echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
+
+
+cat  <<EOF  >/etc/yum.repos.d/kube.repo
+[kube]
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+gpgcheck=0
+EOF
+
+
+yum install kubeadm  -y
+systemctl enable --now  kubelet 
+
+```
+
+## run script 
+
+##  Steps that only Need to be performed on Master Node 
+
+
+## connecting remote. k8s cluseter
+
+```
+❯ cd  Desktop
+❯ ls
+DevopsSRE      admin.conf     ciscomarch22   k8sdep.png     minion.png     techienest
+PHD            backup         helm2          minikube.png   mydockerimages webapp_dev
+❯ 
+❯ kubectl   get  nodes
+NAME       STATUS   ROLES                  AGE   VERSION
+minikube   Ready    control-plane,master   14d   v1.20.2
+❯ kubectl   get  nodes  --kubeconfig  admin.conf
+NAME            STATUS   ROLES                  AGE     VERSION
+master-node     Ready    control-plane,master   6m9s    v1.20.5
+minion-node-1   Ready    <none>                 4m48s   v1.20.5
+minion-node-2   Ready    <none>                 4m44s   v1.20.5
+minion-node-3   Ready    <none>                 4m39s   v1.20.5
+
+```
+
+# Mac client. 
+
+```
+❯ kubectl   get  nodes  --kubeconfig  admin.conf
+NAME            STATUS   ROLES                  AGE   VERSION
+master-node     Ready    control-plane,master   28m   v1.20.5
+minion-node-1   Ready    <none>                 26m   v1.20.5
+minion-node-2   Ready    <none>                 26m   v1.20.5
+minion-node-3   Ready    <none>                 26m   v1.20.5
+
+```
+
+===
+export variable 
+
+```
+ export  KUBECONFIG=/Users/fire/Desktop/admin.conf
+❯ 
+❯ kubectl   get  nodes
+NAME            STATUS   ROLES                  AGE   VERSION
+master-node     Ready    control-plane,master   29m   v1.20.5
+minion-node-1   Ready    <none>                 28m   v1.20.5
+minion-node-2   Ready    <none>                 28m   v1.20.5
+minion-node-3   Ready    <none>                 27m   v1.20.5
+
+```
+
+## COntainer vs POD 
+
+<img src="pod.png">
+
+
+## POd file 
+
+```
+apiVersion: v1 # k8s apiserver version to create POD 
+kind: Pod # like pod there are other things but we want to create POD 
+metadata:
+ name: ashupod-1  # name of POD it must be unique
+spec: # is for your containerize application
+ containers:
+ - image: alpine # docker image
+   name: ashuc1 # name of container inside pod 
+   command: ["/bin/sh","-c","ping fb.com"] #  replace entrypoint thing
+   
+```
+
+### checking syntax 
+
+```
+❯ ls
+ashupod1.yaml
+❯ kubectl  apply -f  ashupod1.yaml  --dry-run=client
+pod/ashupod-1 created (dry run)
+```
+
+### POD deploy
+
+```
+❯ kubectl  apply -f  ashupod1.yaml
+pod/ashupod-1 created
+❯ kubectl   get  pods
+NAME          READY   STATUS    RESTARTS   AGE
+ashupod-1     1/1     Running   0          11s
+vishal-pod1   1/1     Running   0          3m58s
+
+```
+
+
+
