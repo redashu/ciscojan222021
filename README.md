@@ -497,5 +497,96 @@ vishal-pod1   1/1     Running   0          3m58s
 
 ```
 
+## checking pod more details 
+
+```
+❯ kubectl   get  po  ashupod-1
+NAME        READY   STATUS    RESTARTS   AGE
+ashupod-1   1/1     Running   0          7m15s
+❯ kubectl   get  pod   ashupod-1
+NAME        READY   STATUS    RESTARTS   AGE
+ashupod-1   1/1     Running   0          7m21s
+❯ kubectl   get  pods   ashupod-1
+NAME        READY   STATUS    RESTARTS   AGE
+ashupod-1   1/1     Running   0          7m26s
+❯ 
+❯ kubectl  get  nodes
+NAME            STATUS   ROLES                  AGE   VERSION
+master-node     Ready    control-plane,master   68m   v1.20.5
+minion-node-1   Ready    <none>                 67m   v1.20.5
+minion-node-2   Ready    <none>                 67m   v1.20.5
+minion-node-3   Ready    <none>                 67m   v1.20.5
+❯ kubectl   get  pods   ashupod-1   -o wide
+NAME        READY   STATUS    RESTARTS   AGE     IP              NODE            NOMINATED NODE   READINESS GATES
+ashupod-1   1/1     Running   0          7m51s   192.168.97.66   minion-node-2   <none>           <none>
+
+
+```
+
+## crashloopback off  --reason is generally parent process is not correct or running 
+
+```
+❯ kubectl   describe  pod  anilpod-1
+Name:         anilpod-1
+Namespace:    default
+Priority:     0
+Node:         minion-node-3/172.31.64.79
+Start Time:   Wed, 24 Mar 2021 16:40:56 +0530
+Labels:       <none>
+Annotations:  cni.projectcalico.org/podIP: 192.168.174.195/32
+              cni.projectcalico.org/podIPs: 192.168.174.195/32
+Status:       Running
+IP:           192.168.174.195
+IPs:
+  IP:  192.168.174.195
+Containers:
+  anilc1:
+    Container ID:  docker://d3798f1885a9ea1b3196f1174fa62a7d0171cdadf3312223b37833bf8d6decce
+    Image:         alpine
+    Image ID:      docker-pullable://alpine@sha256:a75afd8b57e7f34e4dad8d65e2c7ba2e1975c795ce1ee22fa34f8cf46f96a3be
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/sh
+      -c
+      ping.com
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+
+```
+
+## delete POd 
+
+```
+❯ kubectl  delete  pod anilpod-1
+pod "anilpod-1" deleted
+
+```
+### checking pod output 
+
+```
+10032  kubectl logs  ashupod-1 
+10033  kubectl logs -f  ashupod-1 
+
+```
+
+### access container that is inside POD 
+
+```
+❯ kubectl  exec -it  ashupod-1  -- sh
+/ # 
+/ # cat /etc/os-release 
+NAME="Alpine Linux"
+ID=alpine
+VERSION_ID=3.13.2
+PRETTY_NAME="Alpine Linux v3.13"
+HOME_URL="https://alpinelinux.org/"
+BUG_REPORT_URL="https://bugs.alpinelinux.org/"
+/ # exit
+
+
+```
+
 
 
