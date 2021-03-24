@@ -1,0 +1,9 @@
+apiVersion: v1 # k8s apiserver version to create POD 
+kind: Pod # like pod there are other things but we want to create POD 
+metadata:
+ name: ashupod-1  # name of POD it must be unique
+spec: # is for your containerize application
+ containers:
+ - image: alpine # docker image
+   name: ashuc1 # name of container inside pod 
+   command: ["/bin/sh","-c","ping fb.com"] #  replace entrypoint thing
