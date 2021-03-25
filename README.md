@@ -413,3 +413,88 @@ No resources found in ashux namespace.
 
 
 ```
+
+# Replication controller
+
+<img  src="rc.png">
+
+### commands
+
+```
+ kubectl  apply -f  ashurc1.yaml
+10180  kubectl  get  rc  
+10181  kubectl  get  rc   -n ashux
+10182  kubectl  get  po   -n ashux
+10183  kubectl  delete po ashuwebpod 
+10184  kubectl  delete po ashuwebpod  -n ashux
+10185  kubectl  get  rc   -n ashux
+10186  kubectl  get  po   -n ashux
+10187  kubectl  get  po   -n ashux --show-labels
+10188  kubectl  get  po   -n ashux -o wide
+
+```
+
+## create service  that automatically match the label 
+```
+❯ kubectl  get  rc  -n ashux
+NAME       DESIRED   CURRENT   READY   AGE
+ashu-rc1   1         1         1       5m38s
+❯ 
+❯ kubectl  expose  rc  ashu-rc1  --name mysvc1  --type NodePort --port 1234 --target-port 80 -n ashux
+service/mysvc1 exposed
+❯ kubectl  get  svc   -n ashux
+NAME     TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+mysvc1   NodePort   10.97.112.173   <none>        1234:30269/TCP   30s
+
+```
+
+## setting current namespace 
+
+```
+❯  kubectl  config set-context  --current --namespace=ashux
+Context "kubernetes-admin@kubernetes" modified.
+❯ kubectl  get  po
+NAME             READY   STATUS    RESTARTS   AGE
+ashu-rc1-tvqcz   1/1     Running   0          12m
+❯ kubectl  get  rc
+NAME       DESIRED   CURRENT   READY   AGE
+ashu-rc1   1         1         1       12m
+
+```
+
+## scale pod 
+
+
+```
+❯ kubectl  scale  rc  ashu-rc1  --replicas=3
+replicationcontroller/ashu-rc1 scaled
+❯ kubectl  get  rc
+NAME       DESIRED   CURRENT   READY   AGE
+ashu-rc1   3         3         3       14m
+❯ kubectl  get  po
+NAME             READY   STATUS    RESTARTS   AGE
+ashu-rc1-k2mmq   1/1     Running   0          11s
+ashu-rc1-qqpnj   1/1     Running   0          11s
+ashu-rc1-tvqcz   1/1     Running   0          15m
+
+```
+
+### pods 
+
+```❯ kubectl  apply -f  ashurc1.yaml
+replicationcontroller/ashu-rc1 configured
+❯ 
+❯ kubectl  get  rc
+NAME       DESIRED   CURRENT   READY   AGE
+ashu-rc1   2         2         2       17m
+❯ kubectl  get  rc  sss
+Error from server (NotFound): replicationcontrollers "sss" not found
+❯ kubectl  get  rc
+NAME       DESIRED   CURRENT   READY   AGE
+ashu-rc1   2         2         2       17m
+❯ kubectl  get  po
+NAME             READY   STATUS    RESTARTS   AGE
+ashu-rc1-qqpnj   1/1     Running   0          3m15s
+ashu-rc1-tvqcz   1/1     Running   0          18m
+```
+
