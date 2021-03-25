@@ -497,4 +497,118 @@ NAME             READY   STATUS    RESTARTS   AGE
 ashu-rc1-qqpnj   1/1     Running   0          3m15s
 ashu-rc1-tvqcz   1/1     Running   0          18m
 ```
+# Deployment 
+
+<img src="deploy.png">
+
+
+## reality of deploy
+
+<img src="depreal.png">
+
+## create a sameple html app v1
+
+```
+❯ ls
+Dockerfile k8s.png    myapp.html
+❯ docker  build  -t  dockerashu/ciscong:v1  .
+Sending build context to Docker daemon  9.728kB
+Step 1/5 : FROM nginx
+latest: Pulling from library/nginx
+6f28985ad184: Pull complete 
+29f7ebf60efd: Pull complete 
+879a7c160ac6: Pull complete 
+de58cd48a671: Pull complete 
+be704f37b5f4: Pull complete 
+158aac73782c: Pull complete 
+Digest: sha256:d2925188effb4ddca9f14f162d6fba9b5fab232028aa07ae5c1dab764dca8f9f
+Status: Downloaded newer image for nginx:latest
+ ---> 6084105296a9
+Step 2/5 : MAINTAINER  ashutoshh@linux.com
+ ---> Running in 9da31f7d0eb4
+Removing intermediate container 9da31f7d0eb4
+ ---> a97a32befacb
+Step 3/5 : COPY  myapp.html /usr/share/nginx/html/index.html
+ ---> 2839e5f66a5d
+Step 4/5 : COPY k8s.png  /usr/share/nginx/html/k8s.png
+ ---> ceb4d07d7083
+Step 5/5 : EXPOSE 80
+ ---> Running in 2fead9ee71ec
+Removing intermediate container 2fead9ee71ec
+ ---> 0b94d11cbc5c
+Successfully built 0b94d11cbc5c
+Successfully tagged dockerashu/ciscong:v1
+
+```
+### creating deployment 
+
+```
+kubectl create  deployment  ashudep1  --image=dockerashu/ciscong:v1   --dry-run=client -o yaml >mywebdep.yml
+
+```
+
+### creating depl
+
+```
+❯ kubectl apply -f  mywebdep.yml
+deployment.apps/ashudep1 created
+❯ 
+❯ kubectl  get  deployment
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   1/1     1            1           9s
+❯ kubectl  get  deploy
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   1/1     1            1           13s
+❯ 
+❯ kubectl  get  rs
+NAME                  DESIRED   CURRENT   READY   AGE
+ashudep1-59c9dfcf8d   1         1         1       18s
+❯ kubectl  get  po
+NAME                        READY   STATUS    RESTARTS   AGE
+ashudep1-59c9dfcf8d-9z5gk   1/1     Running   0          23s
+
+```
+
+
+## creating service 
+
+```
+❯ kubectl  expose deployment ashudep1  --name  ashusvc123 --type NodePort --port 1122 --target-port 80
+service/ashusvc123 exposed
+❯ kubectl  get  svc
+NAME         TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+ashusvc123   NodePort   10.108.188.254   <none>        1122:30060/TCP   6s
+
+```
+## more commands 
+
+```
+10254  kubectl  scale  deployment   ashudep1   --replicas=3
+10255  kubectl  get  deploy 
+10256  kubectl  get  po -o wide
+10257  kubectl  get  po -o wide --show-labels
+10258  kubectl  get  po  --show-labels
+❯ kubectl  describe  deploy  ashudep1
+Name:                   ashudep1
+Namespace:              ashux
+CreationTimestamp:      Thu, 25 Mar 2021 16:35:14 +0530
+Labels:                 app=ashudep1
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app=ashudep1
+Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=ashudep1
+  Containers:
+```
+
+## upgrading application 
+
+```
+kubectl   set  image  deployment  ashudep1  ciscong=dockerashu/ciscong:v2
+
+```
+
 
