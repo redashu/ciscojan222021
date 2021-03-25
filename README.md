@@ -109,3 +109,157 @@ ashuwebpod   1/1     Running   0          20s   192.168.174.201   minion-node-3 
 
 <img src="service.png">
 
+## final service diagram
+
+<img src="sfinal.png">
+
+## checking label 
+
+```
+❯ kubectl  get  po  ashuwebpod
+NAME         READY   STATUS    RESTARTS   AGE
+ashuwebpod   1/1     Running   0          95m
+❯ kubectl  get  po  ashuwebpod  --show-labels
+NAME         READY   STATUS    RESTARTS   AGE   LABELS
+ashuwebpod   1/1     Running   0          95m   run=ashuwebpod
+❯ kubectl  get  po   --show-labels
+NAME              READY   STATUS    RESTARTS   AGE   LABELS
+anilpod           1/1     Running   0          57m   run=anilpod
+ashuwebpod        1/1     Running   0          95m   run=ashuwebpod
+manuwebpod        1/1     Running   0          45m   run=manuwebpod
+murali36webpod1   1/1     Running   0          94m   run=murali36webpod1
+rahulwebpod       1/1     Running   0          94m   run=rahulwebpod
+tcwebpod          1/1     Running   0          93m   run=tcwebpod
+veerupod2         1/1     Running   0          58m   run=veerupod2
+vjwebpod          1/1     Running   0          87m   run=vjwebpod
+
+```
+
+## changing label 
+
+### change in YAML 
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels: # this is for label creation of POD 
+    x: helloashu # x is key and helloashu is a value 
+  name: ashuwebpod # name of POD 
+spec:
+  containers:
+  - image: dockerashu/ciscoweb:march2021v1 # docker image from Docker hub 
+    name: ashuwebpod # name of container 
+    ports:
+    - containerPort: 80  # application port 
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+```
+
+### apply the changes 
+
+```
+❯ kubectl apply -f  webpod.yml
+pod/ashuwebpod configured
+❯ kubectl  get  po   --show-labels
+NAME              READY   STATUS    RESTARTS   AGE   LABELS
+anilpod           1/1     Running   0          59m   run=anilpod
+ashuwebpod        1/1     Running   0          98m   x=helloashu
+
+```
+
+### deploying service 
+
+```
+❯ kubectl  apply  -f  ashuwebservice.yaml
+service/ashus1 created
+❯ 
+❯ kubectl   get  service
+NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+ashus1       NodePort    10.96.32.247   <none>        1234:32172/TCP   11s
+kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP          21h
+
+```
+
+
+### access pod container to check env variable 
+
+```
+❯ kubectl  exec  -ti  ashuwebpod  -- bash
+[root@ashuwebpod projects]# 
+[root@ashuwebpod projects]# 
+[root@ashuwebpod projects]# env
+LANG=en_US.UTF-8
+x=webapp
+HOSTNAME=ashuwebpod
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_PORT=tcp://10.96.0.1:443
+PWD=/projects
+HOME=/root
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+TERM=xterm
+SHLVL=1
+KUBERNETES_SERVICE_PORT=443
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+KUBERNETES_SERVICE_HOST=10.96.0.1
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+_=/usr/bin/env
+[root@ashuwebpod projects]# ls
+app1  app2  app3  deploywebapp.sh
+[root@ashuwebpod projects]# cat  deploywebapp.sh 
+#!/bin/bash
+
+if  [ "$x" == "website1" ]
+then
+    cp -rf  /projects/app1/*   /var/www/html/
+    httpd -DFOREGROUND
+
+elif  [ "$x" == "website2" ]
+then
+    cp -rf  /projects/app2/*   /var/www/html/
+    httpd -DFOREGROUND
+
+elif  [ "$x" == "website3" ]
+then
+    cp -rf  /projects/app3/*   /var/www/html/
+    httpd -DFOREGROUND
+else 
+    echo "Wrong variable please contact to Docker Engineer !!"  >/var/www/html/index.html
+    httpd -DFOREGROUND
+fi
+
+```
+
+### changing env var and replacing the pod 
+
+```
+❯ ls
+ashupod1.yaml       ashuwebservice.yaml webpod.yml
+❯ kubectl   replace  -f webpod.yml  --force
+pod "ashuwebpod" deleted
+pod/ashuwebpod replaced
+❯ kubectl  exec  -ti  ashuwebpod  -- bash
+[root@ashuwebpod projects]# env
+ANIL1_SERVICE_HOST=10.109.60.194
+MURALI36S1_PORT_1234_TCP_ADDR=10.107.145.227
+MANUSVC1_PORT_1235_TCP=tcp://10.104.239.174:1235
+ANIL1_PORT=tcp://10.109.60.194:1234
+MURALI36S1_SERVICE_PORT=1234
+MANUSVC1_PORT=tcp://10.104.239.174:1235
+VEERU_SERVICE1_SERVICE_PORT_MYPORT=1234
+RAHULS1_PORT_1234_TCP_PORT=1234
+MURALI36S1_SERVICE_HOST=10.107.145.227
+LANG=en_US.UTF-8
+MURALI36S1_PORT=tcp://10.107.145.227:1234
+VEERU_SERVICE1_SERVICE_PORT=1234
+x=website1
+
+```
+
