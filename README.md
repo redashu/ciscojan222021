@@ -1,6 +1,8 @@
-# Check branches for all docs 
+# Application deployment in k8s 
 
-## overall plan 
+## Web application (multiweb)
 
-<img src="plan.png">
+### Docker based containerization 
+
+<img src="appdep.png">
 
