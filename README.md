@@ -86,3 +86,26 @@ ashuwebpod   1/1     Running   0          20s   192.168.174.201   minion-node-3 
 
 ```
 
+## Accesing application in the POd 
+
+<img src="net.png">
+
+
+## Need of service  in k8s 
+
+<img src="serviceud.png">
+
+## service type 
+
+<img src="stype.png">
+
+## how service will find the pod 
+
+### service will use label of POD to find 
+
+<img src="slabel.png">
+
+## everything you need to remember about servie 
+
+<img src="service.png">
+
