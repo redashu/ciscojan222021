@@ -1,0 +1,128 @@
+# creating secret that is storing db password 
+apiVersion: v1
+data:
+  pw: Q2lzY29kYjA5OA==
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: dbsec
+
+# Deployment for mysql Server 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashudb
+  strategy: {}
+  template: # template of pod 
+    metadata:
+      creationTimestamp: null
+      labels: # label of PODs 
+        app: ashudb
+    spec:
+      volumes: 
+      - name: ashudbvol # name volume 
+        nfs:
+         server: 172.31.76.202 # nfs server IP 
+         path: /data/ashu/ # location on NFs server 
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env: # to creating / use env variable
+        - name: MYSQL_ROOT_PASSWORD # predefine variable in Docker mysql img
+          valueFrom: # fetching value of root password from Secret
+           secretKeyRef:
+            name: dbsec # name of secret 
+            key: pw # key of secret 
+        volumeMounts:
+        - name: ashudbvol # mounting volume 
+          mountPath: /var/lib/mysql/ # data location of MYSQL server
+        resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudbsvc
+  name: ashudbsvc
+spec:
+  ports:
+  - name: "3306"
+    port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: ashudb # label of DB POD 
+  type: ClusterIP # only inside cluster POD can access 
+status:
+  loadBalancer: {}
+
+# creating webapplication deployment 
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashwebapp
+  name: ashwebapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashwebapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels: # label of POD 
+        app: ashwebapp
+    spec:
+      containers:
+      - image: wordpress:4.8-apache
+        name: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST # name /ip of Database to connect
+          value: ashudbsvc # service name of DB pod 
+        - name: WORDPRESS_DB_PASSWORD # password of database 
+          valueFrom: # reading from same secret 
+           secretKeyRef:
+            name: dbsec
+            key: pw
+        resources: {}
+status: {}
+# service of webapp
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashuwebsvc
+  name: ashuwebsvc
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: ashwebapp # matched to label of POD 
+  type: NodePort
+status:
+  loadBalancer: {}
