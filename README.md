@@ -1,6 +1,4 @@
-# Check branches for all docs 
+# k8s application deployment best practise 
 
-## overall plan 
-
-<img src="plan.png">
+## Single YAML file can hold all the information like NS, Deployment , SErvices
 
