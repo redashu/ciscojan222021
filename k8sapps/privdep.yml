@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudep22
+  name: ashudep22
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashudep22
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashudep22
+    spec:
+      imagePullSecrets:
+      - name: ashusec1
+      containers:
+      - image: ciscoindia.azurecr.io/webapp:v1
+        name: webapp
+        
+        resources: {}
+status: {}

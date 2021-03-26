@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: webui
+  name: webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webui
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels: # label of pods
+        app: webui
+    spec:
+      volumes:
+      - name: ashuwebvol
+        hostPath:
+         path: /var/run/docker.sock
+         type: Socket
+      containers:
+      - image: portainer/portainer
+        name: portainer
+        volumeMounts:
+        - name: ashuwebvol
+          mountPath: /var/run/docker.sock
+        ports: # optional part 
+        - containerPort: 9000
+        resources: {}
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashuwebsvc1
+  name: ashuwebsvc1
+spec:
+  ports:
+  - name: 1233-9000
+    port: 1233
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: webui # label of PODs 
+  type: NodePort
+status:
+  loadBalancer: {}
