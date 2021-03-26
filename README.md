@@ -308,6 +308,100 @@ ashwebapp-5c68869c5b-snqkk   1/1     Running   0          35s
 
 ```
 
+# Dashboard in k8s
+
+<img src="dboard.png">
+
+## to create dashboard we need -- users & roles understanding 
+
+### users 
+
+<img src="user.png">
+
+
+## svc account 
+
+### every namespace has service account and their password got stored in secret 
+
+```
+❯ kubectl  get  sa
+NAME      SECRETS   AGE
+default   1         23h
+❯ kubectl  get  secret
+NAME                  TYPE                                  DATA   AGE
+dbsec                 Opaque                                1      148m
+default-token-8hg75   kubernetes.io/service-account-token   3      23h
+❯ kubectl  describe secret  default-token-8hg75
+Name:         default-token-8hg75
+Namespace:    ashux
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: default
+              kubernetes.io/service-account.uid: 393d06fb-178a-4621-b6a8-9a9ca54a5015
+
+Type:  kubernetes.io/service-account-token
+
+Data
+====
+ca.crt:     1066 bytes
+namespace:  5 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Indfd2YwTGpGdUxQb2g1cE91QnB1NHJ3NmVUR0tqM1BoT1FnN1Z1Smpqa0kifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJhc2h1eCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkZWZhdWx0LXRva2VuLThoZzc1Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImRlZmF1bHQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIzOTNkMDZmYi0xNzhhLTQ2MjEtYjZhOC05YTljYTU0YTUwMTUiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6YXNodXg6ZGVmYXVsdCJ9.isG1ay8CCyuaUg5nQJcNKZZ6-ZGJCivQSoWRjTgWLaAeV8htJ1do1haXYuo0m9jxWZx2IhV5C2NVSKx2fWTLbjC_kBw0E_LTLTatfQO7ME95LUTEAWlKPah11GZyivrXLDmMEPy4B3_ywm0NkVNmaMZgD3QGitDaA7aCKdDjXgNrZbqqAAng7DUwxnvFTZ-HCK_mXPbE3QbwryaFyu7nvyR2V6c3uRVSo36dVGrmYD-FYS4F_4uji2yBl-DveL0KIzcduDg_j3s8NZdH2B_1QkBQVB-aHTwV-ICW-TrQ8Bz4Tk5QSM-9jYfLR2TRPhEefGn_Awis60KXFdnmQJhkZQ
+
+
+```
+
+
+## deploying dashboard 
+
+```
+ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+namespace/kubernetes-dashboard created
+serviceaccount/kubernetes-dashboard created
+service/kubernetes-dashboard created
+secret/kubernetes-dashboard-certs created
+secret/kubernetes-dashboard-csrf created
+secret/kubernetes-dashboard-key-holder created
+configmap/kubernetes-dashboard-settings created
+role.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrole.rbac.authorization.k8s.io/kubernetes-dashboard created
+rolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+deployment.apps/kubernetes-dashboard created
+service/dashboard-metrics-scraper created
+deployment.apps/dashboard-metrics-scraper created
+
+```
+
+## contexts in k8s 
+
+```
+❯ kubectl  config get-contexts
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   ashux
+❯ kubectl  config get-contexts
+CURRENT   NAME                                                   CLUSTER                                                AUTHINFO                                               NAMESPACE
+*         arn:aws:eks:us-east-1:061112302981:cluster/ciscoclss   arn:aws:eks:us-east-1:061112302981:cluster/ciscoclss   arn:aws:eks:us-east-1:061112302981:cluster/ciscoclss   
+          kubernetes-admin@kubernetes                            kubernetes                                             kubernetes-admin                                       ashux
+❯ 
+❯ kubectl  get  nodes
+NAME                            STATUS   ROLES    AGE   VERSION
+ip-172-31-25-66.ec2.internal    Ready    <none>   25m   v1.18.9-eks-d1db3c
+ip-172-31-85-147.ec2.internal   Ready    <none>   25m   v1.18.9-eks-d1db3c
+❯ kubectl   config  set-context  kubernetes-admin@kubernetes
+Context "kubernetes-admin@kubernetes" modified.
+❯ kubectl  get  nodes
+NAME                            STATUS   ROLES    AGE   VERSION
+ip-172-31-25-66.ec2.internal    Ready    <none>   26m   v1.18.9-eks-d1db3c
+ip-172-31-85-147.ec2.internal   Ready    <none>   26m   v1.18.9-eks-d1db3c
+❯ kubectl   config  use-context  kubernetes-admin@kubernetes
+Switched to context "kubernetes-admin@kubernetes".
+❯ kubectl  get  nodes
+NAME            STATUS   ROLES                  AGE   VERSION
+master-node     Ready    control-plane,master   47h   v1.20.5
+minion-node-1   Ready    <none>                 47h   v1.20.5
+minion-node-2   Ready    <none>                 47h   v1.20.5
+minion-node-3   Ready    <none>                 47h   v1.20.5
+
+```
 
 
 
