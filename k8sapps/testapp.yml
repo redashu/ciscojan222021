@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: customer1ns
+spec: {}
+status: {}
+
+--- 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: customer1ns
+  creationTimestamp: null
+  labels:
+    app: dep123
+  name: dep123
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dep123
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels: # label of POD
+        app: dep123
+    spec:
+      containers:
+      - image: dockerashu/ciscong:v2
+        name: ciscong
+        ports:
+        - containerPort: 80
+        resources: {}
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: customer1ns
+  creationTimestamp: null
+  labels:
+    app: ashuxvc1
+  name: ashuxvc1
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: dep123 # labels of POD
+  type: NodePort
+status:
+  loadBalancer: {}

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+ name: ashu-rc1 
+ namespace: ashux
+spec:
+ replicas: 4 # no of we want to create 
+ template: # will be use to create PODS 
+  metadata:
+   labels:
+    x: ashuwebpod
+  spec:
+   nodeName: minion-node-2
+   containers:
+   - image: dockerashu/ciscoweb:march2021v1
+     name: ashuwebpod
+     env: 
+     - name: x
+       value: website3
+     ports:
+     - containerPort: 80

@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: ashux
+  creationTimestamp: null
+  labels:
+    run: ashuwebpod
+  name: ashuwebpod
+spec:
+  containers:
+  - image: dockerashu/ciscoweb:march2021v1
+    name: ashuwebpod
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: ashux
+  creationTimestamp: null
+  labels:
+    app: ss11
+  name: ss11
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: ashuwebpod  # only this change
+  type: NodePort
+status:
+  loadBalancer: {}

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+ name: ashus1  # name of service
+spec:
+ type: NodePort # type of service 
+ selector: # this is finder of POD using label 
+  x: helloashu # this is label of pod to find 
+ ports:
+ - name: myport # just port name 
+   port: 1234 # service port that will be bounded with service IP 
+   protocol: TCP # protocol
+   targetPort: 80  # POD port where app is running 
